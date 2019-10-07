@@ -6,8 +6,7 @@ var jeditor = require('gulp-json-editor')
 var uglify = require('gulp-uglify')
 var rename = require('gulp-rename')
 var cleanCSS = require('gulp-clean-css')
-var imageminOptipng = require('imagemin-optipng')
-var mainBowerFiles = require('main-bower-files')
+var imagemin = require('gulp-imagemin')
 var cleanHtml = require('gulp-cleanhtml')
 var stripDebug = require('gulp-strip-debug')
 var zip = require('gulp-zip')
@@ -15,7 +14,7 @@ var zip = require('gulp-zip')
 var packageInfo = require('./package')
 
 gulp.task('watch', function () {
-  return gulp.watch('./src/**', ['default'])
+  return gulp.watch('./src/**', gulp.series('default'))
 })
 
 gulp.task('clean', function () {
@@ -23,7 +22,7 @@ gulp.task('clean', function () {
     .pipe(clean())
 })
 
-gulp.task('styles', ['clean'], function () {
+gulp.task('styles', function () {
   return gulp.src('./src/*.less')
     .pipe(sourcemaps.init())
     .pipe(less())
@@ -33,15 +32,18 @@ gulp.task('styles', ['clean'], function () {
     .pipe(gulp.dest('./ext/content'))
 })
 
-gulp.task('html', ['clean'], function () {
+gulp.task('html', function () {
   return gulp.src('./src/*.html')
     .pipe(cleanHtml())
     .pipe(gulp.dest('./ext/content'))
 })
 
-gulp.task('scripts', ['clean'], function () {
-  gulp.src(mainBowerFiles())
-    .pipe(gulp.dest('./ext/content'))
+gulp.task('scripts', function () {
+  var npmAssets = [
+    './node_modules/jquery/dist/jquery.min.js'
+  ]
+
+  gulp.src(npmAssets).pipe(gulp.dest('./ext/content'))
 
   return gulp.src('./src/*.js')
     .pipe(sourcemaps.init())
@@ -52,13 +54,13 @@ gulp.task('scripts', ['clean'], function () {
     .pipe(gulp.dest('./ext/content'))
 })
 
-gulp.task('images', ['clean'], function () {
+gulp.task('images', function () {
   return gulp.src('./src/icons/*.png')
-    .pipe(imageminOptipng({optimizationLevel: 3})())
+    .pipe(imagemin())
     .pipe(gulp.dest('./ext/icons'))
 })
 
-gulp.task('manifest', ['clean', 'images', 'scripts', 'html', 'styles'], function () {
+gulp.task('manifest', function () {
   var options = {
     'name': packageInfo.name,
     'version': packageInfo.version,
@@ -71,7 +73,7 @@ gulp.task('manifest', ['clean', 'images', 'scripts', 'html', 'styles'], function
     .pipe(gulp.dest('./ext'))
 })
 
-gulp.task('zip', ['manifest'], function () {
+gulp.task('zip', function () {
   var manifest = require('./ext/manifest')
   var fileName = manifest.name + ' v' + manifest.version + '.zip'
 
@@ -80,6 +82,6 @@ gulp.task('zip', ['manifest'], function () {
     .pipe(gulp.dest('dist'))
 })
 
-gulp.task('dist', ['default', 'zip'])
-
-gulp.task('default', ['manifest'])
+gulp.task('default', gulp.series('clean', gulp.parallel('images', 'scripts', 'html', 'styles'), 'manifest'))
+	
+gulp.task('dist', gulp.series('default', 'zip'))

@@ -1,6 +1,6 @@
 {
   "name": "github.expandinizr",
-  "version": "1.8.0",
+  "version": "2.0.1",
   "description": "Chrome extension that improves the GitHub experience",
   "repository": {
     "type": "git",
@@ -18,18 +18,20 @@
   },
   "homepage": "https://github.com/thecodejunkie/github.expandinizr",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-clean-css": "^2.0.7",
-    "gulp-cleanhtml": "^1.0.1",
+    "gulp": "^4.0.2",
+    "gulp-clean": "^0.4.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-cleanhtml": "^1.0.3",
+    "gulp-imagemin": "^6.0.0",
     "gulp-json-editor": "^2.2.1",
-    "gulp-less": "^3.0.5",
+    "gulp-less": "^4.0.1",
     "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-strip-debug": "^1.1.0",
-    "gulp-uglify": "^1.5.3",
-    "gulp-zip": "^3.2.0",
-    "imagemin-optipng": "^4.3.0",
-    "main-bower-files": "^2.11.1"
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-strip-debug": "^3.0.0",
+    "gulp-uglify": "^3.0.0",
+    "gulp-zip": "^5.0.0"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1"
   }
 }
